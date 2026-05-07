@@ -1,0 +1,46 @@
+{
+  "_comment": "Цены можно менять здесь без правки кода. При APPLY_PLAN_PRICING_ON_STARTUP=true бот обновит существующие тарифы на старте. Суперключ дополнительно дорожает на SUPERKEY_MARKUP_PERCENT из .env.",
+  "plans": [
+    {
+      "code": "plan_30",
+      "name": "30 дней",
+      "duration_days": 30,
+      "price_value": "349.00",
+      "price_currency": "RUB",
+      "description": "Стартовый тариф на 30 дней."
+    },
+    {
+      "code": "plan_90",
+      "name": "90 дней",
+      "duration_days": 90,
+      "price_value": "999.00",
+      "price_currency": "RUB",
+      "description": "Оптимальный тариф на 90 дней с выгодой относительно помесячной покупки."
+    },
+    {
+      "code": "plan_180",
+      "name": "180 дней",
+      "duration_days": 180,
+      "price_value": "1790.00",
+      "price_currency": "RUB",
+      "description": "Полугодовой тариф для стабильного использования."
+    },
+    {
+      "code": "plan_365",
+      "name": "365 дней",
+      "duration_days": 365,
+      "price_value": "3290.00",
+      "price_currency": "RUB",
+      "description": "Годовой тариф: самый удобный вариант для постоянного доступа."
+    },
+    {
+      "code": "mtproxy_30",
+      "name": "MTProxy 30 дней",
+      "duration_days": 30,
+      "price_value": "99.00",
+      "price_currency": "RUB",
+      "description": "Недорогой MTProxy/MTProto-доступ. Сервер выбирается автоматически по минимальной текущей нагрузке активными пользователями.",
+      "provisioning_mode": "mtproxy"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+aiogram<4.0,>=3.4
+alembic<2.0,>=1.13
+aiosqlite<1.0,>=0.20
+asyncpg<1.0,>=0.29
+cryptography<45.0,>=42.0
+fastapi<1.0,>=0.110
+httpx<1.0,>=0.27
+openpyxl<4.0,>=3.1
+pydantic-settings<3.0,>=2.2
+python-multipart<1.0,>=0.0.9
+SQLAlchemy<3.0,>=2.0
+uvicorn[standard]<1.0,>=0.29

@@ -1,0 +1,2 @@
+"""vpn-seller application package."""
+
