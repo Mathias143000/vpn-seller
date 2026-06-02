@@ -1,0 +1,18 @@
+{
+  "project": "vpn-seller",
+  "review_date": "2026-05-25",
+  "status": "application-ops-lab-evidence",
+  "validated_by": [
+    "docker compose config",
+    "compileall",
+    "pytest",
+    "dependency audit",
+    "SBOM generation",
+    "docker compose web health smoke"
+  ],
+  "not_claimed": [
+    "Kubernetes/GitOps ownership",
+    "production payment ownership",
+    "complete PostgreSQL DR automation"
+  ]
+}
