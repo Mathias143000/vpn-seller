@@ -3,7 +3,7 @@
 from alembic import op
 import sqlalchemy as sa
 
-revision = "0003_hiddify_server_country_and_order_preference"
+revision = "0003_hiddify_server_country"
 down_revision = "0002_hiddify_servers"
 branch_labels = None
 depends_on = None

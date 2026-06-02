@@ -4,7 +4,7 @@ from alembic import op
 import sqlalchemy as sa
 
 revision = "0004_order_fulfillment_mode"
-down_revision = "0003_hiddify_server_country_and_order_preference"
+down_revision = "0003_hiddify_server_country"
 branch_labels = None
 depends_on = None
 

@@ -23,7 +23,7 @@ def upgrade() -> None:
         sa.Column("admin_proxy_path", sa.String(length=128), nullable=False),
         sa.Column("client_proxy_path", sa.String(length=128), nullable=False),
         sa.Column("api_key_encrypted", sa.Text(), nullable=False),
-        sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.text("1")),
+        sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.true()),
         sa.Column("panel_version", sa.String(length=64), nullable=True),
         sa.Column("last_health_status", sa.String(length=32), nullable=False, server_default=sa.text("'unknown'")),
         sa.Column("last_healthcheck_at", sa.DateTime(timezone=True), nullable=True),

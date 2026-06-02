@@ -18,9 +18,11 @@ services:
     build: .
     restart: unless-stopped
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       APP_MODE: polling
+      BOT_TOKEN: ${BOT_TOKEN:-123456789:local_demo_token_for_runtime_smoke_only}
       DATABASE_URL: postgresql+asyncpg://vpn_seller:vpn_seller@db:5432/vpn_seller
     depends_on:
       db:
@@ -31,9 +33,11 @@ services:
     build: .
     restart: unless-stopped
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       APP_MODE: web
+      BOT_TOKEN: ${BOT_TOKEN:-123456789:local_demo_token_for_runtime_smoke_only}
       DATABASE_URL: postgresql+asyncpg://vpn_seller:vpn_seller@db:5432/vpn_seller
     depends_on:
       db:
