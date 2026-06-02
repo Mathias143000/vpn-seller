@@ -1,0 +1,35 @@
+name: security
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 3 * * 1"
+
+jobs:
+  filesystem-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Secret and runtime artifact guard
+        run: |
+          ! find . \( -name .env -o -name node_modules -o -name dist -o -name __pycache__ -o -name "*.db" -o -name "*.sqlite" -o -path "./artifacts/*" \) \
+            -not -path "./.git/*" | grep .
+          ! grep -R --line-number -E "BEGIN (RSA|OPENSSH|EC|PRIVATE) KEY|AKIA[0-9A-Z]{16}|gh[p]_|xox[baprs]-" \
+            --exclude-dir=".git" --exclude-dir="artifacts" .
+
+      - name: No unpinned latest images
+        run: |
+          ! grep -R --line-number -E "image:\s*.*:latest|FROM\s+\S+:latest" \
+            --include="*.yml" --include="*.yaml" --include="Dockerfile" .
+
+      - name: Trivy filesystem scan
+        uses: aquasecurity/trivy-action@915b19bbe73b92a6cf82a1bc12b087c9a19a5fe2 # v0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
