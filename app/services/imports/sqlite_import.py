@@ -18,7 +18,13 @@ from app.services.transactions import transactional
 
 class SqliteImportService:
     format_version = "golden-vpn.typed-keys.v1"
-    allowed_types = {KeyType.AWG.value, KeyType.TROJAN.value, KeyType.HYSTERIA.value}
+    allowed_types = {
+        KeyType.AWG.value,
+        KeyType.TROJAN.value,
+        KeyType.HYSTERIA.value,
+        KeyType.VLESS.value,
+        KeyType.IKEV2.value,
+    }
     allowed_statuses = {KeyStatus.AVAILABLE.value, KeyStatus.ISSUED.value}
     required_columns = {
         "key_type",

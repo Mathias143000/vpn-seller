@@ -65,22 +65,44 @@ async def test_typed_sqlite_preview_and_import_preserve_type_and_status(db, sett
                 "Existing Trojan",
                 "2026-12-31T00:00:00+00:00",
             ),
+            (
+                "vless",
+                "VLESS-SE-existing",
+                "issued",
+                "vless://secret-three@example.invalid",
+                "plan_30",
+                "legacy:SE:VLESS-SE-existing",
+                "Existing VLESS",
+                None,
+            ),
+            (
+                "ikev2",
+                "IKEV2-SE-existing",
+                "issued",
+                "IKEv2 client bundle\nusername: test",
+                "plan_30",
+                "legacy:SE:IKEV2-SE-existing",
+                "Existing IKEv2",
+                None,
+            ),
         ],
     )
 
     preview = await services["sqlite_import"].preview(filename="typed.sqlite", content=content)
-    assert preview["rows_valid"] == 2
-    assert preview["types"] == {"awg": 1, "trojan": 1}
-    assert preview["statuses"] == {"available": 1, "issued": 1}
+    assert preview["rows_valid"] == 4
+    assert preview["types"] == {"awg": 1, "trojan": 1, "vless": 1, "ikev2": 1}
+    assert preview["statuses"] == {"available": 1, "issued": 3}
 
     result = await services["sqlite_import"].import_file(
         filename="typed.sqlite", content=content, uploaded_by_user_id=admin.id
     )
     keys = list(await db.scalars(select(VPNKey).order_by(VPNKey.id)))
-    assert result["rows_imported"] == 2
+    assert result["rows_imported"] == 4
     assert [(key.key_type, key.status) for key in keys] == [
         ("awg", "available"),
         ("trojan", "issued"),
+        ("vless", "issued"),
+        ("ikev2", "issued"),
     ]
     assert services["protector"].decrypt(keys[0].key_value_encrypted).startswith("[Interface]")
     audit_logs = list(await db.scalars(select(AuditLog)))

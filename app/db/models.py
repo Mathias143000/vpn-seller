@@ -64,6 +64,8 @@ class KeyType(str, enum.Enum):
     AWG = "awg"
     TROJAN = "trojan"
     HYSTERIA = "hysteria"
+    VLESS = "vless"
+    IKEV2 = "ikev2"
 
 
 class OrderStatus(str, enum.Enum):
