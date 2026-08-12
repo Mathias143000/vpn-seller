@@ -72,6 +72,13 @@ async def ensure_runtime_compatibility(engine: AsyncEngine) -> None:
             )
             await _ensure_sqlite_column(
                 connection,
+                table_name="vpn_keys",
+                column_name="key_type",
+                ddl="ALTER TABLE vpn_keys ADD COLUMN key_type VARCHAR(32) NOT NULL DEFAULT 'unknown'",
+                backfill_sql="UPDATE vpn_keys SET key_type = 'unknown' WHERE key_type IS NULL",
+            )
+            await _ensure_sqlite_column(
+                connection,
                 table_name="hiddify_servers",
                 column_name="country_name",
                 ddl="ALTER TABLE hiddify_servers ADD COLUMN country_name VARCHAR(128) NOT NULL DEFAULT 'Без страны'",
@@ -156,6 +163,13 @@ async def ensure_runtime_compatibility(engine: AsyncEngine) -> None:
             column_name="provisioning_mode",
             ddl="ALTER TABLE plans ADD COLUMN provisioning_mode VARCHAR(32) NOT NULL DEFAULT 'auto'",
             backfill_sql="UPDATE plans SET provisioning_mode = 'auto' WHERE provisioning_mode IS NULL",
+        )
+        await _ensure_column_if_missing(
+            connection,
+            table_name="vpn_keys",
+            column_name="key_type",
+            ddl="ALTER TABLE vpn_keys ADD COLUMN key_type VARCHAR(32) NOT NULL DEFAULT 'unknown'",
+            backfill_sql="UPDATE vpn_keys SET key_type = 'unknown' WHERE key_type IS NULL",
         )
         await _ensure_column_if_missing(
             connection,

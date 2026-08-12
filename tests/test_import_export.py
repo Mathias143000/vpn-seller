@@ -86,6 +86,8 @@ async def test_export_generation_contains_inventory_and_orders_with_audit(db, se
 
     assert inventory_rows[1][1] == "plan_30"
     assert inventory_rows[1][3] == "vpn://exported"
+    assert inventory_rows[0][-1] == "key_type"
+    assert inventory_rows[1][-1] == "unknown"
     assert order_rows[1][0] == order.id
     assert order_rows[1][3] == "plan_30"
     assert order_rows[1][4] == OrderStatus.ISSUED.value

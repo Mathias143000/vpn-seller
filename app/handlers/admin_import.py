@@ -26,8 +26,8 @@ async def admin_import_command(message: Message, state: FSMContext, app_user, **
     await state.set_state(AdminImportState.waiting_for_document)
     await message.answer(
         (
-            "<b>Импорт XLSX 📥</b>\n\n"
-            "Пришлите файл <code>.xlsx</code> с листом <code>keys</code>.\n"
+            "<b>Импорт ключей 📥</b>\n\n"
+            "Пришлите <code>.xlsx</code> с листом <code>keys</code> или typed SQLite от Golden VPN.\n"
             "Сначала покажу preview, а импорт начнем только после подтверждения."
         ),
         reply_markup=build_import_waiting_actions(),
@@ -59,8 +59,8 @@ async def admin_import_callback(callback: CallbackQuery, state: FSMContext, app_
     await state.set_state(AdminImportState.waiting_for_document)
     await callback.message.edit_text(
         (
-            "<b>Импорт XLSX 📥</b>\n\n"
-            "Пришлите файл <code>.xlsx</code> с листом <code>keys</code>.\n"
+            "<b>Импорт ключей 📥</b>\n\n"
+            "Пришлите <code>.xlsx</code> с листом <code>keys</code> или typed SQLite от Golden VPN.\n"
             "Сначала покажу preview, а импорт начнем только после подтверждения."
         ),
         reply_markup=build_import_waiting_actions(),
@@ -75,17 +75,26 @@ async def import_preview_document(message: Message, state: FSMContext, app_user,
     except AccessDeniedError:
         await message.answer("Для этого нужны права оператора 🙂")
         return
-    if not message.document.file_name.lower().endswith(".xlsx"):
-        await message.answer("Нужен файл формата <code>.xlsx</code> 🙂")
+    filename = message.document.file_name
+    lower_filename = filename.lower()
+    if lower_filename.endswith(".xlsx"):
+        import_kind = "xlsx"
+        import_service = services.xlsx_import
+    elif lower_filename.endswith((".sqlite", ".sqlite3", ".db")):
+        import_kind = "sqlite"
+        import_service = services.sqlite_import
+    else:
+        await message.answer("Нужен файл <code>.xlsx</code>, <code>.sqlite</code> или <code>.db</code> 🙂")
         return
 
     buffer = BytesIO()
     await message.bot.download(message.document, destination=buffer)
     content = buffer.getvalue()
-    preview = await services.xlsx_import.preview(filename=message.document.file_name, content=content)
+    preview = await import_service.preview(filename=filename, content=content)
     await state.update_data(
-        import_filename=message.document.file_name,
+        import_filename=filename,
         import_content=base64.b64encode(content).decode("ascii"),
+        import_kind=import_kind,
     )
     await state.set_state(AdminImportState.waiting_for_confirmation)
     await message.answer(
@@ -94,6 +103,8 @@ async def import_preview_document(message: Message, state: FSMContext, app_user,
             f"Всего строк: <b>{preview['rows_total']}</b>\n"
             f"Валидных: <b>{preview['rows_valid']}</b>\n"
             f"Отклонено: <b>{preview['rows_rejected']}</b>\n"
+            f"Типы: <code>{preview.get('types', {})}</code>\n"
+            f"Статусы: <code>{preview.get('statuses', {})}</code>\n"
             f"Первые ошибки: <code>{preview['errors'][:5]}</code>"
         ),
         reply_markup=build_import_confirmation(),
@@ -109,7 +120,8 @@ async def confirm_import_callback(callback: CallbackQuery, state: FSMContext, ap
         return
     data = await state.get_data()
     content = base64.b64decode(data["import_content"])
-    result = await services.xlsx_import.import_file(
+    import_service = services.sqlite_import if data.get("import_kind") == "sqlite" else services.xlsx_import
+    result = await import_service.import_file(
         filename=data["import_filename"],
         content=content,
         uploaded_by_user_id=app_user.id,

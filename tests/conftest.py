@@ -34,6 +34,7 @@ from app.services.hiddify_usage import HiddifyUsageMonitorService
 from app.services.imports.xlsx_export import XlsxExportService
 from app.services.imports.hiddify_xlsx_import import HiddifyXlsxImportService
 from app.services.imports.xlsx_import import XlsxImportService
+from app.services.imports.sqlite_import import SqliteImportService
 from app.services.inventory import InventoryService
 from app.services.issuing import IssuingService
 from app.services.notifications import NotificationService
@@ -306,6 +307,12 @@ def build_services(
         audit_logs_repo=audit_logs_repo,
         key_protector=key_protector,
     )
+    sqlite_import = SqliteImportService(
+        session=session,
+        import_batches_repo=import_batches_repo,
+        audit_logs_repo=audit_logs_repo,
+        key_protector=key_protector,
+    )
     hiddify_xlsx_import = HiddifyXlsxImportService(
         session=session,
         hiddify=hiddify_service,
@@ -350,6 +357,7 @@ def build_services(
         "delivery": delivery_service,
         "communications": communications_service,
         "xlsx_import": xlsx_import,
+        "sqlite_import": sqlite_import,
         "hiddify_xlsx_import": hiddify_xlsx_import,
         "xlsx_export": xlsx_export,
         "subscriptions": subscriptions,

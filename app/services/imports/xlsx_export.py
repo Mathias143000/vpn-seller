@@ -115,6 +115,7 @@ class XlsxExportService:
                 "order_id",
                 "issued_at",
                 "created_at",
+                "key_type",
             ]
         )
         for vpn_key, plan, user, order in rows:
@@ -133,6 +134,7 @@ class XlsxExportService:
                     order.id if order else None,
                     vpn_key.issued_at.isoformat() if vpn_key.issued_at else None,
                     vpn_key.created_at.isoformat() if vpn_key.created_at else None,
+                    vpn_key.key_type,
                 ]
             )
 

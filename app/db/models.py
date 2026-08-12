@@ -59,6 +59,13 @@ class KeyStatus(str, enum.Enum):
     ARCHIVED = "archived"
 
 
+class KeyType(str, enum.Enum):
+    UNKNOWN = "unknown"
+    AWG = "awg"
+    TROJAN = "trojan"
+    HYSTERIA = "hysteria"
+
+
 class OrderStatus(str, enum.Enum):
     CREATED = "created"
     PENDING_PAYMENT = "pending_payment"
@@ -168,6 +175,7 @@ class VPNKey(TimestampMixin, Base):
     plan_id: Mapped[int] = mapped_column(ForeignKey("plans.id"), nullable=False)
     key_value_encrypted: Mapped[str] = mapped_column(Text, nullable=False)
     key_fingerprint: Mapped[str] = mapped_column(String(128), unique=True, nullable=False)
+    key_type: Mapped[str] = mapped_column(String(32), default=KeyType.UNKNOWN.value, nullable=False)
     external_ref: Mapped[str | None] = mapped_column(String(255), nullable=True)
     comment: Mapped[str | None] = mapped_column(Text, nullable=True)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

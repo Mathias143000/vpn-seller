@@ -66,6 +66,14 @@ Remove-Item -Recurse -Force artifacts,.pytest_cache,__pycache__ -ErrorAction Sil
 - Проверить GHCR image visibility и публичную `cosign verify` команду после push.
 - Не коммитить реальные `.env`, Telegram/VK/WhatsApp/payment tokens или XLSX с ключами.
 
+## Импорт типизированных ключей Golden VPN
+
+Команда `/admin_import` принимает обычный XLSX или SQLite bundle формата `golden-vpn.typed-keys.v1`. Для каждой строки сохраняются тип `awg`, `trojan` или `hysteria` и статус `available` либо `issued`. Перед подтверждением бот показывает количество строк по типам и статусам; дубликаты и неизвестные тарифы отклоняются.
+
+Ключи `available` попадают в продаваемый склад. Ключи `issued` сохраняются для учета уже действующих клиентов и повторно не выдаются. Административный XLSX-экспорт содержит колонку `key_type`.
+
+Golden issuer bot и `vpn-seller` используют разные токены и имеют разные обязанности. Issuer на VPN-сервере только выпускает и выгружает ключи и сообщает администратору о TLS. `vpn-seller` остается источником клиентских привязок, принимает решение при форс-мажоре, уведомляет клиента и непосредственно доставляет замену через `/admin_emergency`.
+
 ## Желательно
 
 - Runtime backup/restore drill для PostgreSQL именно в этом repo.
